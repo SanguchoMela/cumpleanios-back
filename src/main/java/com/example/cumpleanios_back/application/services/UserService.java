@@ -1,7 +1,9 @@
 package com.example.cumpleanios_back.application.services;
 
-import org.springframework.stereotype.Repository;
+import com.example.cumpleanios_back.domain.entities.User;
 
-@Repository
-public class UserService{
+import java.util.Optional;
+
+public interface UserService  {
+    Optional<User> findByID(long id);
 }
