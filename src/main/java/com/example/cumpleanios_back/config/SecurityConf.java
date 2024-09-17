@@ -1,6 +1,6 @@
 package com.example.cumpleanios_back.config;
 
-import com.example.cumpleanios_back.application.services.UserDetailServiceImpl;
+import com.example.cumpleanios_back.application.services.impl.UserDetailServiceImpl;
 import com.example.cumpleanios_back.config.filters.JwtTokenValidator;
 import com.example.cumpleanios_back.config.jwt.JwtUtils;
 import com.example.cumpleanios_back.domain.entities.Role;
@@ -27,6 +27,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 
 import java.util.Set;
@@ -67,18 +69,22 @@ public class SecurityConf {
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, AuthenticationProvider authenticationProvider) throws Exception {
-        return httpSecurity.csrf(csrf -> csrf.disable()).sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)).authorizeHttpRequests(http -> {
-            // EndPoints publicos
-            http.requestMatchers(HttpMethod.POST, "/auth/**").permitAll();
+        return httpSecurity
+                .csrf(csrf -> csrf.disable()).sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(http -> {
+                    // EndPoints publicos
+                    http.requestMatchers(HttpMethod.POST, "/auth/**").permitAll();
 
-            // EndPoints Privados
-            http.requestMatchers("/users/**").authenticated();
+                    // EndPoints Privados
+                    http.requestMatchers("/users/**").authenticated();
 //                    http.requestMatchers(HttpMethod.POST, "/method/post").authenticated();
 //                    http.requestMatchers(HttpMethod.DELETE, "/method/delete").authenticated();
 //                    http.requestMatchers(HttpMethod.PUT, "/method/put").authenticated();
 
-            http.anyRequest().denyAll();
-        }).addFilterBefore(new JwtTokenValidator(jwtUtils), BasicAuthenticationFilter.class).build();
+                    http.anyRequest().denyAll();
+                }).
+                addFilterBefore(new JwtTokenValidator(jwtUtils), BasicAuthenticationFilter.class)
+                .build();
     }
 
     @Bean
@@ -101,4 +107,13 @@ public class SecurityConf {
         return httpSecurity.getSharedObject(AuthenticationManagerBuilder.class).userDetailsService(userDetailService).passwordEncoder(passwordEncoder).and().build();
     }
 
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/**").allowedOrigins("http://localhost:3000").allowedMethods("GET", "POST", "PUT", "DELETE").maxAge(3600);
+            }
+        };
+    }
 }

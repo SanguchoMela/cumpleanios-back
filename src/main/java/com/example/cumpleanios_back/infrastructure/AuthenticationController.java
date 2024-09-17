@@ -1,6 +1,6 @@
 package com.example.cumpleanios_back.infrastructure;
 
-import com.example.cumpleanios_back.application.services.UserDetailServiceImpl;
+import com.example.cumpleanios_back.application.services.impl.UserDetailServiceImpl;
 import com.example.cumpleanios_back.infrastructure.dto.AuthLoginRequest;
 import com.example.cumpleanios_back.infrastructure.dto.AuthResponse;
 import jakarta.validation.Valid;
