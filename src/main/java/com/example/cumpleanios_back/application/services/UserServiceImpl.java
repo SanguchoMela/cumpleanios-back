@@ -1,8 +1,7 @@
 package com.example.cumpleanios_back.application.services;
 
-import com.example.cumpleanios_back.domain.entities.User;
+import com.example.cumpleanios_back.domain.entities.UserEntity;
 import com.example.cumpleanios_back.domain.repositories.UserRepository;
-import jakarta.annotation.PostConstruct;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -19,8 +18,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<User> findByID(long id) {
+    public Optional<UserEntity> findByID(long id) {
         return this.userRepository.findById(id);
     }
+
 
 }
