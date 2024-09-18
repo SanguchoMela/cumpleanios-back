@@ -1,6 +1,7 @@
 package com.example.cumpleanios_back.config;
 
 import com.example.cumpleanios_back.application.services.impl.UserDetailServiceImpl;
+import com.example.cumpleanios_back.application.usecases.NotifyHumanTalentUseCase;
 import com.example.cumpleanios_back.config.filters.JwtTokenValidator;
 import com.example.cumpleanios_back.config.jwt.JwtUtils;
 import com.example.cumpleanios_back.domain.entities.Role;
@@ -31,8 +32,6 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 
 import java.util.Arrays;
@@ -48,6 +47,7 @@ public class SecurityConf {
 
     @Autowired
     JwtUtils jwtUtils;
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -122,6 +122,5 @@ public class SecurityConf {
     public AuthenticationManager authenticationManager(HttpSecurity httpSecurity, PasswordEncoder passwordEncoder) throws Exception {
         return httpSecurity.getSharedObject(AuthenticationManagerBuilder.class).userDetailsService(userDetailService).passwordEncoder(passwordEncoder).and().build();
     }
-
 
 }

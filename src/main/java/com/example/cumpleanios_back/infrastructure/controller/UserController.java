@@ -75,11 +75,12 @@ public class UserController {
                     .toList();
 
 
-            List<UserCreateDtoRequest> response = new ArrayList<>();
+            List<UserResponseDtoResponse> response = new ArrayList<>();
 
             for (UserEntity user : employees) {
                 response.add(
-                        UserCreateDtoRequest.builder()
+                        UserResponseDtoResponse.builder()
+                                .id(user.getId())
                                 .name(user.getName())
                                 .lastName(user.getLastName())
                                 .email(user.getEmail())

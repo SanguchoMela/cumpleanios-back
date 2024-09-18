@@ -6,31 +6,42 @@ import com.example.cumpleanios_back.domain.entities.UserEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.Period;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class NotifyHumanTalentUseCase {
     private final UserService userService;
     private final DateService dateService;
 
+
+
     public NotifyHumanTalentUseCase(UserService userService, DateService dateService) {
         this.userService = userService;
         this.dateService = dateService;
     }
-    public void execute(){
-        // Extract current month
-        LocalDate  currentMont = LocalDate.now();
-        this.dateService.setDate(currentMont);
+    public void execute() {
+        LocalDate currentMonth = LocalDate.now();
+        this.dateService.setDate(currentMonth);
 
-        // Extract employees which will have its birthday current mont
         List<UserEntity> users = userService.findAllByBirthMonth(this.dateService.getMonth());
 
-        // Filter users which birthdate is less than 1 day
+        List<UserEntity> usersWithUpcomingBirthdays = users.stream()
+                .filter(user -> {
+                    LocalDate birthDate = user.getDateBirth().withYear(currentMonth.getYear()); // Adjust year to current year
+                    return this.dateService.lessThanOneDay(LocalDate.now(), birthDate);
+                })
+                .collect(Collectors.toList());
 
+        if (!usersWithUpcomingBirthdays.isEmpty()) {
+            notifyUsers(usersWithUpcomingBirthdays);
+        }
     }
 
-    public void birthdateLessThanOne(LocalDate userBirthDate, LocalDate currentDate){
-        var days = Period.between(userBirthDate, currentDate).getDays();
+    private void notifyUsers(List<UserEntity> users) {
+        users.forEach(user -> {
+            System.out.println("Notifying user: " + user.getName() + " whose birthday is soon!");
+        });
     }
+
 }

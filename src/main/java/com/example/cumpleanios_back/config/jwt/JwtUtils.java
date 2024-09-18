@@ -39,7 +39,7 @@ public class JwtUtils {
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
 
-        String jwtToken = JWT.create()
+        return JWT.create()
                 .withIssuer(this.userGenerator)
                 .withSubject(username)
                 .withClaim("authorities", authorities)
@@ -48,7 +48,6 @@ public class JwtUtils {
                 .withJWTId(UUID.randomUUID().toString())
                 .withNotBefore(new Date(System.currentTimeMillis()))
                 .sign(algorithm);
-        return jwtToken;
     }
 
     public DecodedJWT validateToken(String token) {
@@ -59,8 +58,7 @@ public class JwtUtils {
                     .withIssuer(this.userGenerator)
                     .build();
 
-            DecodedJWT decodedJWT = verifier.verify(token);
-            return decodedJWT;
+            return verifier.verify(token);
         } catch (JWTVerificationException exception) {
             throw new JWTVerificationException("Token invalid, not Authorized");
         }

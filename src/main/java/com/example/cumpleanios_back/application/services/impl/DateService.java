@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
 
 @Data
@@ -26,7 +27,9 @@ public class DateService {
         return date.getMonth().getValue();
     }
 
-    public LocalDate minusDate(LocalDate startDate, LocalDate endDate){
-        return startDate;
+    public boolean lessThanOneDay(LocalDate startDate, LocalDate endDate){
+        long daysBetween = ChronoUnit.DAYS.between(startDate, endDate);
+        return daysBetween >= 0 && daysBetween <= 1;
     }
+
 }
