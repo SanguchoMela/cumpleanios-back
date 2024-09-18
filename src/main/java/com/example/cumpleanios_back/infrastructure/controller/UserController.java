@@ -5,7 +5,9 @@ import com.example.cumpleanios_back.application.usecases.FindAllByBirthMonth;
 import com.example.cumpleanios_back.application.usecases.FindEmployeesByBirthMonthUseCase;
 import com.example.cumpleanios_back.domain.entities.UserEntity;
 import com.example.cumpleanios_back.infrastructure.dto.user.UserBirthayDtoResponse;
+import com.example.cumpleanios_back.infrastructure.dto.user.UserCreateDtoRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -63,8 +65,28 @@ public class UserController {
     }
 
     @PostMapping
-    public UserEntity createUser(@RequestBody UserEntity users) {
-        return this.userService.createUser(users);
+    public ResponseEntity<?> createUser(@RequestBody UserCreateDtoRequest user) {
+        try{
+            var userEntityBuilder = UserEntity.builder().
+                    name(user.name())
+                    .email(user.email())
+                    .dateBirth(user.birthDate())
+                    .lastName(user.lastName())
+                    .build();
+            UserEntity created = this.userService.createUser(userEntityBuilder);
+
+            var response =UserCreateDtoRequest.builder().
+                    name(created.getName())
+                    .lastName(created.getLastName())
+                    .email(created.getEmail())
+                    .birthDate(created.getDateBirth())
+                    .build();
+
+            return new ResponseEntity<>(response,HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity<>(e, HttpStatus.BAD_REQUEST);
+        }
+
     }
 
     @PutMapping("/updateUsers/{id}")

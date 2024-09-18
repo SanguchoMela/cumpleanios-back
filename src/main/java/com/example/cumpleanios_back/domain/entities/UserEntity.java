@@ -29,7 +29,6 @@ public class UserEntity {
     @NotBlank(message = "Name must not be empty")
     private String name;
 
-    @NotBlank(message = "Username must not be empty")
     private String username;
 
     @NotBlank(message = "LastName must not be empty")
@@ -38,7 +37,6 @@ public class UserEntity {
     @Email(message = "Please provide a valid email!")
     private String email;
 
-    @NotBlank(message = "Password must not be empty")
     private String password;
 
     @Past(message = "La fecha de nacimiento debe ser una fecha pasada.")

@@ -6,5 +6,5 @@ import java.time.LocalDate;
 
 @Builder
 
-public record UserCreateDtoRequest(String name, String lastname, LocalDate birthDate) {
+public record UserCreateDtoRequest(String name, String lastName, LocalDate birthDate, String email) {
 }
