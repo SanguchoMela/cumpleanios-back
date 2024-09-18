@@ -1,4 +1,4 @@
-package com.example.cumpleanios_back.infrastructure.dto;
+package com.example.cumpleanios_back.infrastructure.dto.auth;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonPropertyOrder({"username", "message", "status", "jwt"})

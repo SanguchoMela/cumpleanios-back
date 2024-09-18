@@ -1,4 +1,4 @@
-package com.example.cumpleanios_back.infrastructure;
+package com.example.cumpleanios_back.infrastructure.controller;
 
 import com.example.cumpleanios_back.application.services.UserService;
 import com.example.cumpleanios_back.application.usecases.FindAllByBirthMonth;
@@ -62,7 +62,7 @@ public class UserController {
         return this.userService.showUser(id);
     }
 
-    @PostMapping("/createUsers")
+    @PostMapping
     public UserEntity createUser(@RequestBody UserEntity users) {
         return this.userService.createUser(users);
     }

@@ -76,8 +76,8 @@ public class SecurityConf {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, AuthenticationProvider authenticationProvider) throws Exception {
         return httpSecurity
-                .csrf(AbstractHttpConfigurer::disable).sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(http -> {
+                .cors().and()
+                .csrf(AbstractHttpConfigurer::disable).sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)).authorizeHttpRequests(http -> {
                     // EndPoints publicos
                     http.requestMatchers(HttpMethod.POST, "/auth/**").permitAll();
 
@@ -88,15 +88,14 @@ public class SecurityConf {
 //                    http.requestMatchers(HttpMethod.PUT, "/method/put").authenticated();
 
                     http.anyRequest().denyAll();
-                }).
-                addFilterBefore(new JwtTokenValidator(jwtUtils), BasicAuthenticationFilter.class)
-                .build();
+                }).addFilterBefore(new JwtTokenValidator(jwtUtils), BasicAuthenticationFilter.class).build();
     }
+
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:5173/"));
-        configuration.setAllowedMethods(Arrays.asList("GET","POST"));
+        configuration.setAllowedOrigins(List.of("http://localhost:5173"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

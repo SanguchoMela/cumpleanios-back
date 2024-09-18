@@ -1,4 +1,4 @@
-package com.example.cumpleanios_back.infrastructure.dto;
+package com.example.cumpleanios_back.infrastructure.dto.auth;
 
 import jakarta.validation.constraints.NotBlank;
 
