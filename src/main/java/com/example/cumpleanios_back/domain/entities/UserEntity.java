@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -42,10 +43,11 @@ public class UserEntity {
 
     @Past(message = "La fecha de nacimiento debe ser una fecha pasada.")
     @DateTimeFormat(pattern = "dd-MM-yyyy")
-    private Date dateBirth;
+    private LocalDate dateBirth;
 
     @ManyToMany(fetch = FetchType.EAGER, targetEntity = Role.class, cascade = CascadeType.MERGE) // We need all roles
-    @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))// Intermediate table configuration
+    @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+// Intermediate table configuration
     private Set<Role> roles = new HashSet<>();
 
 }

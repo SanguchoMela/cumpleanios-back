@@ -2,6 +2,7 @@ package com.example.cumpleanios_back.application.services;
 
 import com.example.cumpleanios_back.domain.entities.UserEntity;
 
+import java.time.LocalDate;
 import java.util.Optional;
 import java.util.List;
 
@@ -13,6 +14,6 @@ public interface UserService  {
     UserEntity createUser(UserEntity users);
     UserEntity updateUser(Long id, UserEntity users);
     void deleteUser(Long id);
-
-
+    int getAge(UserEntity user);
+    List<UserEntity> findUsersBetweenPeriod(LocalDate startDate, LocalDate endDate);
 }
