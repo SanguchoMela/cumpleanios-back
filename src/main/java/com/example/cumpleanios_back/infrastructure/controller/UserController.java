@@ -79,7 +79,7 @@ public class UserController {
                         UserCreateDtoRequest.builder()
                                 .name(user.getName())
                                 .lastName(user.getLastName())
-                                .email(user.getLastName())
+                                .email(user.getEmail())
                                 .birthDate(user.getDateBirth())
                                 .build()
                 );
