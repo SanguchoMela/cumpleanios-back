@@ -25,4 +25,8 @@ public class DateService {
     public Integer getMonth(){
         return date.getMonth().getValue();
     }
+
+    public LocalDate minusDate(LocalDate startDate, LocalDate endDate){
+        return startDate;
+    }
 }

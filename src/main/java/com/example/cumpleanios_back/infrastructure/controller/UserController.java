@@ -9,6 +9,7 @@ import com.example.cumpleanios_back.domain.entities.Role;
 import com.example.cumpleanios_back.domain.entities.RoleType;
 import com.example.cumpleanios_back.domain.entities.UserEntity;
 import com.example.cumpleanios_back.domain.repositories.RoleRepository;
+import com.example.cumpleanios_back.infrastructure.dto.auth.ErrorMessageResponse;
 import com.example.cumpleanios_back.infrastructure.dto.user.UserBirthayDtoResponse;
 import com.example.cumpleanios_back.infrastructure.dto.user.UserCreateDtoRequest;
 import org.apache.catalina.User;
@@ -19,29 +20,26 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/users")
 public class UserController {
-    @Autowired
-    UserService userService;
+    private final UserService userService;
 
-    @Autowired
-    private EmailService emailService;
+    private final EmailService emailService;
 
-    @Autowired
-    private RoleRepository roleRepository;
+    private final RoleRepository roleRepository;
 
     private final FindAllByBirthMonth findAllByBirthMonth;
 
     @Autowired
-    public UserController(FindEmployeesByBirthMonthUseCase findEmployeesByBirthMonthUseCase, FindAllByBirthMonth findAllByBirthMonth) {
+    public UserController(FindEmployeesByBirthMonthUseCase findEmployeesByBirthMonthUseCase, FindAllByBirthMonth findAllByBirthMonth, UserService userService, EmailService emailService, RoleRepository roleRepository) {
         this.findAllByBirthMonth = findAllByBirthMonth;
+        this.userService = userService;
+        this.emailService = emailService;
+        this.roleRepository = roleRepository;
     }
 
     @GetMapping("/birthday")
@@ -71,10 +69,15 @@ public class UserController {
     public ResponseEntity<?> findAll() {
         try {
             List<UserEntity> users = this.userService.indexUsers();
-            users.stream().filter(userEntity -> userEntity.getRoles().contains(RoleType.EMPLOYEE)).collect(Collectors.toList());
+            List<UserEntity> employees = users.stream()
+                    .filter(userEntity -> userEntity.getRoles().stream()
+                            .anyMatch(role -> role.getRoleType() == RoleType.EMPLOYEE))
+                    .toList();
+
+
             List<UserCreateDtoRequest> response = new ArrayList<>();
 
-            for (UserEntity user : users) {
+            for (UserEntity user : employees) {
                 response.add(
                         UserCreateDtoRequest.builder()
                                 .name(user.getName())
@@ -90,10 +93,36 @@ public class UserController {
         }
     }
 
-    @GetMapping("/showUsers/{id}")
-    public UserEntity showUser(@PathVariable Long id) {
-        return this.userService.showUser(id);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> delete(@PathVariable long id) {
+        try {
+
+            Optional<UserEntity> user = this.userService.findByID(id);
+
+            if (user.isEmpty()) {
+                var errorMessage = ErrorMessageResponse.builder()
+                        .message("User not found")
+                        .status(false)
+                        .build();
+                return new ResponseEntity<>(errorMessage, HttpStatus.NOT_FOUND);
+            }
+
+
+            if (user.get().getRoles().stream().anyMatch(role -> role.getRoleType() == RoleType.ADMIN)) {
+                var errorMessage = ErrorMessageResponse.builder()
+                        .message("You don't have enough permissions")
+                        .status(false)
+                        .build();
+                return new ResponseEntity<>(errorMessage, HttpStatus.UNAUTHORIZED);
+            }
+
+            this.userService.deleteUser(id);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("An error occurred: " + e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
+
 
     @PostMapping
     public ResponseEntity<?> createUser(@RequestBody UserCreateDtoRequest user) {
@@ -124,20 +153,10 @@ public class UserController {
 
     }
 
-    @PutMapping("/updateUsers/{id}")
-    public UserEntity updateUser(@PathVariable Long id, @RequestBody UserEntity users) {
-        return this.userService.updateUser(id, users);
-    }
-
-    @DeleteMapping("/{id}")
-    public String deleteUser(@PathVariable Long id) {
-        this.userService.deleteUser(id);
-        return "Empleado eliminado con exito";
-    }
-
     @PostMapping("/send")
     public ResponseEntity<?> sendMail(@RequestBody EmailBody emailBody) {
         try {
+            System.out.println("Iniciando envio de correo");
             var response = this.emailService.sendEmail(emailBody);
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
