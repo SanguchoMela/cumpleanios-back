@@ -29,29 +29,6 @@ public class UserController {
         this.findAllByBirthMonth = findAllByBirthMonth;
     }
 
-    @GetMapping("/birthda")
-    public ResponseEntity<?> getEmployeesByBirthMonth(@RequestParam("month") String month) {
-        try {
-            LocalDate currentMonth = LocalDate.parse(month + "-01");
-            List<UserEntity> users = findEmployeesByBirthMonthUseCase.execute(currentMonth);
-            List<UserBirthayDtoResponse> dtoResponses = new ArrayList<>();
-            for (UserEntity user : users) {
-                dtoResponses.add(
-                        UserBirthayDtoResponse.builder()
-                                .dateBirth(user.getDateBirth())
-                                .email(user.getEmail())
-                                .name(user.getName())
-                                .last_name(user.getLastName())
-                                .age(this.userService.getAge(user))
-                                .build()
-                );
-            }
-            return ResponseEntity.ok(dtoResponses);
-        } catch (DateTimeParseException e) {
-            return ResponseEntity.badRequest().build();
-        }
-    }
-
     @GetMapping("/birthday")
     public ResponseEntity<?> getAllEmployeesByBirthMonth(@RequestParam("month") String month) {
         try {

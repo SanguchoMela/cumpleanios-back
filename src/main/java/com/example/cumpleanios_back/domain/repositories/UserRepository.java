@@ -21,6 +21,7 @@ public interface UserRepository extends JpaRepository<UserEntity,Long> {
     Page<UserProjection> findAllProjectedBy(Pageable pageable);
 
     List<UserEntity> findAllByDateBirthBetween(LocalDate startDate, LocalDate endDate);
-    @Query("SELECT u FROM UserEntity u WHERE FUNCTION('MONTH', u.dateBirth) = :month")
+    @Query("SELECT u FROM UserEntity u WHERE EXTRACT(MONTH FROM u.dateBirth) = :month")
     List<UserEntity> findAllByBirthMonth(@Param("month") int month);
+
 }

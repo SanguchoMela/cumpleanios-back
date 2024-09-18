@@ -75,9 +75,6 @@ public class UserServiceImpl implements UserService {
         if (birthDate == null) {
             throw new IllegalArgumentException("Date of birth must not be empty");
         }
-        System.out.println(birthDate);
-        System.out.println(LocalDate.now());
-        System.out.println(Period.between(birthDate, LocalDate.now()).getYears());
         return Period.between(birthDate, LocalDate.now()).getYears();
     }
 
