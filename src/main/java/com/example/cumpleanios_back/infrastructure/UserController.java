@@ -1,9 +1,9 @@
 package com.example.cumpleanios_back.infrastructure;
 
 import com.example.cumpleanios_back.application.services.UserService;
+import com.example.cumpleanios_back.application.usecases.FindAllByBirthMonth;
 import com.example.cumpleanios_back.application.usecases.FindEmployeesByBirthMonthUseCase;
 import com.example.cumpleanios_back.domain.entities.UserEntity;
-import com.example.cumpleanios_back.infrastructure.dto.ErrorMessageResponse;
 import com.example.cumpleanios_back.infrastructure.dto.user.UserBirthayDtoResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -21,13 +21,15 @@ public class UserController {
     UserService userService;
 
     private final FindEmployeesByBirthMonthUseCase findEmployeesByBirthMonthUseCase;
+    private final FindAllByBirthMonth findAllByBirthMonth;
 
     @Autowired
-    public UserController(FindEmployeesByBirthMonthUseCase findEmployeesByBirthMonthUseCase) {
+    public UserController(FindEmployeesByBirthMonthUseCase findEmployeesByBirthMonthUseCase, FindAllByBirthMonth findAllByBirthMonth) {
         this.findEmployeesByBirthMonthUseCase = findEmployeesByBirthMonthUseCase;
+        this.findAllByBirthMonth = findAllByBirthMonth;
     }
 
-    @GetMapping("/birthday")
+    @GetMapping("/birthda")
     public ResponseEntity<?> getEmployeesByBirthMonth(@RequestParam("month") String month) {
         try {
             LocalDate currentMonth = LocalDate.parse(month + "-01");
@@ -40,9 +42,32 @@ public class UserController {
                          .email(user.getEmail())
                          .name(user.getName())
                          .last_name(user.getLastName())
+                         .age(this.userService.getAge(user))
                          .build()
                );
            }
+            return ResponseEntity.ok(dtoResponses);
+        } catch (DateTimeParseException e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+    @GetMapping("/birthday")
+    public ResponseEntity<?> getAllEmployeesByBirthMonth(@RequestParam("month") String month) {
+        try {
+            LocalDate currentMonth = LocalDate.parse(month + "-01");
+            List<UserEntity> users = findAllByBirthMonth.execute(currentMonth);
+            List<UserBirthayDtoResponse> dtoResponses = new ArrayList<>();
+            for(UserEntity user: users){
+                dtoResponses.add(
+                        UserBirthayDtoResponse.builder()
+                                .dateBirth(user.getDateBirth())
+                                .email(user.getEmail())
+                                .name(user.getName())
+                                .last_name(user.getLastName())
+                                .age(this.userService.getAge(user))
+                                .build()
+                );
+            }
             return ResponseEntity.ok(dtoResponses);
         } catch (DateTimeParseException e) {
             return ResponseEntity.badRequest().build();

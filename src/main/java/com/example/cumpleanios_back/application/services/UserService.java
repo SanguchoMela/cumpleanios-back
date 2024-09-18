@@ -16,4 +16,6 @@ public interface UserService  {
     void deleteUser(Long id);
     int getAge(UserEntity user);
     List<UserEntity> findUsersBetweenPeriod(LocalDate startDate, LocalDate endDate);
+    List<UserEntity> findAllByBirthMonth(Integer month);
+
 }

@@ -21,4 +21,8 @@ public class DateService {
     public LocalDate lastMonthDay(){
         return date.with(TemporalAdjusters.lastDayOfMonth());
     }
+
+    public Integer getMonth(){
+        return date.getMonth().getValue();
+    }
 }
