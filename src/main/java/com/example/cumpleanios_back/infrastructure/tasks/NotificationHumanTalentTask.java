@@ -6,15 +6,15 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class NotificationHumanTalentTask {
-
     private final NotifyHumanTalentUseCase notifyHumanTalentUseCase;
 
     public NotificationHumanTalentTask(NotifyHumanTalentUseCase notifyHumanTalentUseCase) {
         this.notifyHumanTalentUseCase = notifyHumanTalentUseCase;
     }
 
-    @Scheduled(cron = "0 12 9 * * ?")
+    @Scheduled(cron = "0 58 10 * * ?")
     public void notifyHumanTalent() {
+        System.out.println("Iniciando Notificacion a talento humano");
         this.notifyHumanTalentUseCase.execute();
     }
 }

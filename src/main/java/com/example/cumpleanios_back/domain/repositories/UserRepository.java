@@ -1,8 +1,7 @@
 package com.example.cumpleanios_back.domain.repositories;
 
+import com.example.cumpleanios_back.domain.entities.RoleType;
 import com.example.cumpleanios_back.domain.entities.UserEntity;
-import com.example.cumpleanios_back.domain.entities.UserProjection;
-import org.apache.catalina.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,11 +16,9 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity,Long> {
     Optional<UserEntity> findByUsername(String username);
-
-    Page<UserProjection> findAllProjectedBy(Pageable pageable);
-
     List<UserEntity> findAllByDateBirthBetween(LocalDate startDate, LocalDate endDate);
     @Query("SELECT u FROM UserEntity u WHERE EXTRACT(MONTH FROM u.dateBirth) = :month")
     List<UserEntity> findAllByBirthMonth(@Param("month") int month);
-
+    @Query("SELECT u FROM UserEntity u JOIN u.roles r WHERE r.roleType = :roleType")
+    List<UserEntity> findByRoleType(@Param("roleType") RoleType roleType);
 }

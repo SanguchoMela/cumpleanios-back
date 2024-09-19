@@ -3,6 +3,7 @@ package com.example.cumpleanios_back.application.services.impl;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -28,9 +29,21 @@ public class DateService {
     }
 
     public boolean lessThanOneDay(LocalDate startDate, LocalDate endDate){
-        long daysBetween = ChronoUnit.DAYS.between(startDate, endDate);
+        long daysBetween = daysBetween(startDate,endDate);
         System.out.println(daysBetween);
         return daysBetween == 1;
+    }
+
+    public boolean lessZeroDay(LocalDate start, LocalDate endDate){
+        long daysBetween = daysBetween(start,endDate);
+        return daysBetween == 0;
+    }
+    private long daysBetween(LocalDate startDate, LocalDate endDate){
+        return ChronoUnit.DAYS.between(startDate,endDate);
+    }
+
+    public LocalDate getCurrentDate(){
+        return LocalDate.now();
     }
 
 }

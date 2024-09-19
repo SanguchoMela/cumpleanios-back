@@ -1,5 +1,6 @@
 package com.example.cumpleanios_back.application.services;
 
+import com.example.cumpleanios_back.domain.entities.RoleType;
 import com.example.cumpleanios_back.domain.entities.UserEntity;
 
 import java.time.LocalDate;
@@ -17,5 +18,5 @@ public interface UserService  {
     int getAge(UserEntity user);
     List<UserEntity> findUsersBetweenPeriod(LocalDate startDate, LocalDate endDate);
     List<UserEntity> findAllByBirthMonth(Integer month);
-
+    List<UserEntity> findByRoleType(RoleType roleType);
 }

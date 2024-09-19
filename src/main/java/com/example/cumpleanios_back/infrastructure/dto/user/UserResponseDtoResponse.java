@@ -5,5 +5,5 @@ import lombok.Builder;
 import java.time.LocalDate;
 
 @Builder
-public record UserBirthayDtoResponse (String name, String last_name, String email, LocalDate dateBirth, Integer age) {
+public record UserResponseDtoResponse(long id,String name, String lastName, LocalDate birthDate, String email, String phone){
 }

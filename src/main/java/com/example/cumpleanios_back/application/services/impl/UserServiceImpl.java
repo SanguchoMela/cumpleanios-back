@@ -1,6 +1,7 @@
 package com.example.cumpleanios_back.application.services.impl;
 
 import com.example.cumpleanios_back.application.services.UserService;
+import com.example.cumpleanios_back.domain.entities.RoleType;
 import com.example.cumpleanios_back.domain.entities.UserEntity;
 import com.example.cumpleanios_back.domain.repositories.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -86,6 +87,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserEntity> findAllByBirthMonth(Integer month) {
         return this.userRepository.findAllByBirthMonth(month);
+    }
+
+    @Override
+    public List<UserEntity> findByRoleType(RoleType roleType) {
+        return this.userRepository.findByRoleType(roleType);
     }
 
 }

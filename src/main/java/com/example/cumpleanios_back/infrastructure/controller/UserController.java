@@ -1,6 +1,7 @@
 package com.example.cumpleanios_back.infrastructure.controller;
 
 import com.example.cumpleanios_back.application.services.EmailService;
+import com.example.cumpleanios_back.application.services.RoleService;
 import com.example.cumpleanios_back.application.services.UserService;
 import com.example.cumpleanios_back.application.services.utils.EmailBody;
 import com.example.cumpleanios_back.application.usecases.FindAllByBirthMonth;
@@ -8,11 +9,10 @@ import com.example.cumpleanios_back.application.usecases.FindEmployeesByBirthMon
 import com.example.cumpleanios_back.domain.entities.Role;
 import com.example.cumpleanios_back.domain.entities.RoleType;
 import com.example.cumpleanios_back.domain.entities.UserEntity;
-import com.example.cumpleanios_back.domain.repositories.RoleRepository;
+import com.example.cumpleanios_back.infrastructure.dto.user.UserResponseDtoResponse;
 import com.example.cumpleanios_back.infrastructure.dto.auth.ErrorMessageResponse;
-import com.example.cumpleanios_back.infrastructure.dto.user.UserBirthayDtoResponse;
+import com.example.cumpleanios_back.infrastructure.dto.user.UserBirtdhayDtoResponse;
 import com.example.cumpleanios_back.infrastructure.dto.user.UserCreateDtoRequest;
-import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/users")
@@ -30,16 +29,17 @@ public class UserController {
 
     private final EmailService emailService;
 
-    private final RoleRepository roleRepository;
 
     private final FindAllByBirthMonth findAllByBirthMonth;
 
+    private final RoleService roleService;
+
     @Autowired
-    public UserController(FindEmployeesByBirthMonthUseCase findEmployeesByBirthMonthUseCase, FindAllByBirthMonth findAllByBirthMonth, UserService userService, EmailService emailService, RoleRepository roleRepository) {
+    public UserController(FindEmployeesByBirthMonthUseCase findEmployeesByBirthMonthUseCase, FindAllByBirthMonth findAllByBirthMonth, UserService userService, EmailService emailService, RoleService roleService) {
         this.findAllByBirthMonth = findAllByBirthMonth;
         this.userService = userService;
         this.emailService = emailService;
-        this.roleRepository = roleRepository;
+        this.roleService = roleService;
     }
 
     @GetMapping("/birthday")
@@ -47,14 +47,15 @@ public class UserController {
         try {
             LocalDate currentMonth = LocalDate.parse(month + "-01");
             List<UserEntity> users = findAllByBirthMonth.execute(currentMonth);
-            List<UserBirthayDtoResponse> dtoResponses = new ArrayList<>();
+            List<UserBirtdhayDtoResponse> dtoResponses = new ArrayList<>();
             for (UserEntity user : users) {
                 dtoResponses.add(
-                        UserBirthayDtoResponse.builder()
+                        UserBirtdhayDtoResponse.builder()
                                 .dateBirth(user.getDateBirth())
                                 .email(user.getEmail())
                                 .name(user.getName())
                                 .last_name(user.getLastName())
+                                .phone(user.getPhone())
                                 .age(this.userService.getAge(user))
                                 .build()
                 );
@@ -85,6 +86,7 @@ public class UserController {
                                 .lastName(user.getLastName())
                                 .email(user.getEmail())
                                 .birthDate(user.getDateBirth())
+                                .phone(user.getPhone())
                                 .build()
                 );
             }
@@ -127,8 +129,7 @@ public class UserController {
     @PostMapping
     public ResponseEntity<?> createUser(@RequestBody UserCreateDtoRequest user) {
         try {
-            Role employeeRole = Role.builder().roleType(RoleType.EMPLOYEE).build();
-            employeeRole = roleRepository.save(employeeRole);
+            Role employeeRole = roleService.getOrCreate(RoleType.EMPLOYEE);
 
             var userEntityBuilder = UserEntity.builder().
                     name(user.name())
@@ -136,6 +137,7 @@ public class UserController {
                     .dateBirth(user.birthDate())
                     .lastName(user.lastName())
                     .roles(Set.of(employeeRole))
+                    .phone(user.phone())
                     .build();
             UserEntity created = this.userService.createUser(userEntityBuilder);
 
@@ -144,23 +146,18 @@ public class UserController {
                     .lastName(created.getLastName())
                     .email(created.getEmail())
                     .birthDate(created.getDateBirth())
+                    .phone(created.getPhone())
                     .build();
 
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>(e, HttpStatus.BAD_REQUEST);
+            var errorMessage = ErrorMessageResponse.builder()
+                    .message(e.getMessage())
+                    .status(false)
+                    .build();
+            return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
         }
 
     }
 
-    @PostMapping("/send")
-    public ResponseEntity<?> sendMail(@RequestBody EmailBody emailBody) {
-        try {
-            System.out.println("Iniciando envio de correo");
-            var response = this.emailService.sendEmail(emailBody);
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
-    }
 }

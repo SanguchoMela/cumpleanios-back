@@ -66,7 +66,7 @@ public class SecurityConf {
                     adminRole = roleRepository.save(adminRole);
                 }
 
-                UserEntity defaultUserEntity = UserEntity.builder().name("Admin").lastName("Admin").username("admin").email("admin@example.com").password(passwordEncoder.encode("admin123")).roles(Set.of(adminRole)).build();
+                UserEntity defaultUserEntity = UserEntity.builder().name("Admin").lastName("Admin").username("admin").email("fernaulin@gmail.com").password(passwordEncoder.encode("admin123")).roles(Set.of(adminRole)).build();
 
                 userRepository.save(defaultUserEntity);
             }

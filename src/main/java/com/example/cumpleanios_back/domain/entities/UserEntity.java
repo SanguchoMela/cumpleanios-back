@@ -29,15 +29,19 @@ public class UserEntity {
     @NotBlank(message = "Name must not be empty")
     private String name;
 
+    @Column(unique = true)
     private String username;
 
     @NotBlank(message = "LastName must not be empty")
     private String lastName;
 
     @Email(message = "Please provide a valid email!")
+    @Column(unique = true)
     private String email;
 
     private String password;
+
+    private String phone;
 
     @Past(message = "La fecha de nacimiento debe ser una fecha pasada.")
     @DateTimeFormat(pattern = "dd-MM-yyyy")
