@@ -6,5 +6,9 @@
 <body>
 <h1 th:text="${subject}">Subject</h1>
 <p th:text="${content}">This is the email content.</p>
+<tr th:each="employee: ${employees}">
+    <td th:text="${employee.name}" />
+    <td th:text="${employee.dateBirth}" />
+</tr>
 </body>
 </html>

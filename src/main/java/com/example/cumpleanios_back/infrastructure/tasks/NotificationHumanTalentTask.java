@@ -13,9 +13,8 @@ public class NotificationHumanTalentTask {
         this.notifyHumanTalentUseCase = notifyHumanTalentUseCase;
     }
 
-    @Scheduled(cron = "0 43 16 * * ?")
-    public void reportCurrentTime() {
+    @Scheduled(cron = "0 12 9 * * ?")
+    public void notifyHumanTalent() {
         this.notifyHumanTalentUseCase.execute();
-        System.out.println("Esta es una tarea programada");
     }
 }

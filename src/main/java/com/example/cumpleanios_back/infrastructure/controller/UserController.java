@@ -124,7 +124,6 @@ public class UserController {
         }
     }
 
-
     @PostMapping
     public ResponseEntity<?> createUser(@RequestBody UserCreateDtoRequest user) {
         try {

@@ -29,7 +29,8 @@ public class DateService {
 
     public boolean lessThanOneDay(LocalDate startDate, LocalDate endDate){
         long daysBetween = ChronoUnit.DAYS.between(startDate, endDate);
-        return daysBetween >= 0 && daysBetween <= 1;
+        System.out.println(daysBetween);
+        return daysBetween == 1;
     }
 
 }
