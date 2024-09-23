@@ -10,18 +10,15 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
 
 
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -42,27 +39,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserEntity createUser(UserEntity users) {
         return this.userRepository.save(users);
-    }
-
-    @Override
-    public UserEntity updateUser(Long id, UserEntity users) {
-        UserEntity usersBd = userRepository.findById(id).get();
-        if (Objects.nonNull(users.getName())) {
-            usersBd.setName(users.getName());
-        }
-
-        if (Objects.nonNull(users.getLastName())) {
-            usersBd.setLastName(users.getLastName());
-        }
-
-        if (Objects.nonNull(users.getEmail())) {
-            usersBd.setEmail(users.getEmail());
-        }
-
-        if (Objects.nonNull(users.getDateBirth())) {
-            usersBd.setDateBirth(users.getDateBirth());
-        }
-        return this.userRepository.save(usersBd);
     }
 
     @Override

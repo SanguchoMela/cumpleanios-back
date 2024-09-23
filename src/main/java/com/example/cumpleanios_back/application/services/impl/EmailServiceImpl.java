@@ -7,7 +7,6 @@ import jakarta.mail.internet.MimeMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
-import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 
 
@@ -22,14 +21,13 @@ public class EmailServiceImpl implements EmailService {
     }
 
     @Override
-    public boolean sendEmail(EmailBody emailBody) {
-        return sendEmailTool(emailBody);
+    public void sendEmail(EmailBody emailBody) {
+        sendEmailTool(emailBody);
     }
 
 
 
-    private boolean sendEmailTool(EmailBody emailBody) {
-        boolean send = false;
+    private void sendEmailTool(EmailBody emailBody) {
         MimeMessage message = sender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message);
         try {
@@ -39,11 +37,9 @@ public class EmailServiceImpl implements EmailService {
             helper.setText(htmlContent, true);
             helper.setSubject(emailBody.subject());
             sender.send(message);
-            send = true;
         } catch (MessagingException e) {
             System.out.println("Something went wrong during sending email: " + e.getMessage());
         }
-        return send;
     }
 
 

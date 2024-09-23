@@ -12,7 +12,7 @@ public class NotificationCollaboratorTask {
         this.notifyEmployeesUseCase = notifyEmployeesUseCase;
     }
 
-    @Scheduled(cron = "0 44 11 * * ?")
+    @Scheduled(cron = "0 14 16 * * ?")
     public void notifyCollaborators(){
         System.out.println("Starting employees Notifications");
         this.notifyEmployeesUseCase.execute();

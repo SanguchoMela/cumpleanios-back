@@ -11,8 +11,7 @@ public class NotificationHumanTalentTask {
     public NotificationHumanTalentTask(NotifyHumanTalentUseCase notifyHumanTalentUseCase) {
         this.notifyHumanTalentUseCase = notifyHumanTalentUseCase;
     }
-
-    @Scheduled(cron = "0 58 10 * * ?")
+    @Scheduled(cron = "0 14 16 * * ?")
     public void notifyHumanTalent() {
         System.out.println("Iniciando Notificacion a talento humano");
         this.notifyHumanTalentUseCase.execute();

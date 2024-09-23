@@ -13,7 +13,6 @@ public interface UserService  {
     List<UserEntity> indexUsers();
     UserEntity showUser(Long id);
     UserEntity createUser(UserEntity users);
-    UserEntity updateUser(Long id, UserEntity users);
     void deleteUser(Long id);
     int getAge(UserEntity user);
     List<UserEntity> findUsersBetweenPeriod(LocalDate startDate, LocalDate endDate);
